@@ -17,6 +17,7 @@ jobs:
         with:
           github-token: ${{ secrets.INTERN }}
           script: |
+            const core = require('@actions/core');
             const issueTitle = context.payload.issue.title;
             // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
             const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(issueTitle);
