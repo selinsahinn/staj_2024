@@ -11,18 +11,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Check issue title format
-        id: check_format
-        uses: actions/github-script@0.9.0
-        with:
-          github-token: ${{ secrets.INTERN }}
-          script: |
-            const issueTitle = context.payload.issue.title;
-            // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
-            const regex = /^.* \[(.*?)\]\[(.*?)\]\[(.*?)\]\[(.*?)\].*$/;
-            const isValidFormat = regex.test(issueTitle);
-            return isValidFormat;
-
       - name: Read Labels JSON
         id: labels
         uses: actions/github-script@0.9.0
@@ -33,6 +21,31 @@ jobs:
             const content = fs.readFileSync(path);
             const labels = JSON.parse(content);
             return labels;
+
+      - name: Check issue title format
+        id: check_format
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{ secrets.INTERN }}
+          script: |
+            const issueTitle = context.payload.issue.title;
+            const labels = ${{ steps.labels.outputs.result }}
+            const labelGroups = issueTitle.match(/\[([^\]]+)\]/g);
+
+            if (labelGroups.length !== Object.keys(labels).length) {
+              return false;
+            }
+
+            const isValid = labelGroups.every((group, index) => {
+              const tags = group.match(/[^,\[\]]+/g).map(tag => tag.trim());
+              const field = Object.keys(labels)[index];
+              const validLabels = labels[field];
+              return tags.every(tag => validLabels.includes(tag));
+            });
+
+            return isValid;
+
+
 
       - name: Add comment and close issue if format is invalid
         if: ${{ steps.check_format.outputs.result == 'false' }}
@@ -78,6 +91,9 @@ jobs:
             const labelsToAdd = [];
             const fields = ${{ steps.labels.outputs.result }}
 
+
+            let validGroupCount = 0;
+
             // Etiketleri ayırt etmek için Regex kullanın
             const labelGroups = title.match(/\[([^\]]+)\]/g);
             labelGroups.forEach(group => {
@@ -87,12 +103,16 @@ jobs:
               tags.forEach(tag => {
                 for (const [field, validLabels] of Object.entries(fields)) {
                   if (validLabels.includes(tag)) {
+                    validGroupCount++;
                     labelsToAdd.push(tag);
                   }
                 }
               });
             });
 
+            
+            if (validGroupCount !== Object.keys(fields).length) {
+              }
 
             const wasClosed = issueState === 'closed';
 
