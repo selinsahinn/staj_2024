@@ -19,7 +19,8 @@ jobs:
           script: |
             const issueTitle = context.payload.issue.title;
             // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
-            const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(issueTitle);
+            const regex = /^.* \[(.*?)\]\[(.*?)\]\[(.*?)\]\[(.*?)\].*$/;
+            const isValidFormat = regex.test(issueTitle);
             return isValidFormat;
 
       - name: Read Labels JSON
