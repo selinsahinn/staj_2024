@@ -20,10 +20,6 @@ jobs:
             const issueTitle = context.payload.issue.title;
             // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
             const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(issueTitle);
-            # core.setOutput('isValid', isValidFormat);
-            # if (!isValidFormat) {
-            #     core.setFailed('Issue formatı geçersiz.');
-            #   }
             return isValidFormat;
 
       - name: Read Labels JSON
