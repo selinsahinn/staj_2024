@@ -29,6 +29,8 @@ jobs:
         script: |
           const title = context.payload.issue.title;
           const issue_number = context.issue.number;
+          const issue_author = context.payload.issue.user.login;
+
           const labelsToAdd = [];
           const fields = ${{ steps.labels.outputs.result }};
 
@@ -47,6 +49,7 @@ jobs:
             });
           });
 
+       
           // Eğer uygun etiketler varsa, issue'ya etiket ekle
           if (labelsToAdd.length > 0) {
             github.issues.addLabels({
@@ -55,4 +58,12 @@ jobs:
               issue_number: issue_number,
               labels: labelsToAdd
             })
+
+            github.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+                assignees: [issue_author]
+              });
+    
           }
