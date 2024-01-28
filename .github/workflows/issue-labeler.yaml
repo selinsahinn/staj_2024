@@ -30,9 +30,36 @@ jobs:
           const title = context.payload.issue.title;
           const issue_number = context.issue.number;
           const issue_author = context.payload.issue.user.login;
+          const issueUrl = context.payload.issue.html_url;
 
           const labelsToAdd = [];
           const fields = ${{ steps.labels.outputs.result }};
+          const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(title);
+
+          if (!isValidFormat) {
+            // Uygun format mesajı
+            const comment = `
+              Merhaba @${context.actor}, bu issue'nun başlığı belirlenen formata uymuyor.
+              Lütfen başlığı "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]" formatına uygun hale getirin.
+              Bu işlemi tamamladıktan sonra issue'yu yeniden açabilirsiniz.
+            `;
+
+            // Issue'ya yorum ekle
+            github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: comment
+            });
+
+            // Issue'yu kapat
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              state: 'closed'
+            });
+          }
 
           // Etiketleri ayırt etmek için Regex kullanın
           const labelGroups = title.match(/\[([^\]]+)\]/g);
@@ -51,7 +78,7 @@ jobs:
 
        
           // Eğer uygun etiketler varsa, issue'ya etiket ekle
-          if (labelsToAdd.length > 0) {
+          if (labelsToAdd.length > 3) {
             github.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
