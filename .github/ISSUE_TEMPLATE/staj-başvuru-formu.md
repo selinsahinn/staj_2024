@@ -1,7 +1,7 @@
 ---
 name: Staj Başvuru Formu
 about: 2024 Staj başvuru hazır formatı.
-title: ''
+title: AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]
 labels: ''
 assignees: ''
 
