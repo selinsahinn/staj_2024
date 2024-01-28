@@ -38,7 +38,7 @@ jobs:
             return labels;
 
       - name: Add comment and close issue if format is invalid
-        if: ${{ steps.check_format.outputs.isValid == 'false' }}
+        if: ${{ steps.check_format.outputs.result == 'false' }}
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{ secrets.INTERN }}
@@ -67,7 +67,7 @@ jobs:
 
       - name: Label the issue
         uses: actions/github-script@0.9.0
-        if: ${{ steps.check_format.outputs.isValid == 'true' }}
+        if: ${{ steps.check_format.outputs.result == 'true' }}
         with:
           github-token: ${{ secrets.INTERN }}
           script: |
