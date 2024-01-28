@@ -12,7 +12,8 @@ assignees: ''
 - **Ad Soyad:**
 - **Okul:**
 - **Sınıf:**
-- **CV:** [Google Drive Linki](#)
+- **CV:** [Google Drive Linki veya pdf linki](#)
+- **Sigorta Okul Karşılıyor** (Evet/Hayır): 
 
 ### Kendin Hakkında (kendini anlatmak istersen):
 
