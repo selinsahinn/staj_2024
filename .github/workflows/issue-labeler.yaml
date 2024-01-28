@@ -8,103 +8,102 @@ jobs:
   add-labels:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    
-    - name: Check issue title format
-      id: check_format
-      uses: actions/github-script@0.9.0
-      with:
-        github-token: ${{ secrets.INTERN }}
-        script: |
-          const issueTitle = context.payload.issue.title;
-          // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
-          const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(issueTitle);
-          return isValidFormat;
+      - name: Checkout Repo
+        uses: actions/checkout@v2
 
-    - name: Read Labels JSON
-      id: labels
-      uses: actions/github-script@0.9.0
-      with:
-        script: |
-          const fs = require('fs');
-          const path = './.github/labels.json';
-          const content = fs.readFileSync(path);
-          const labels = JSON.parse(content);
-          return labels;
+      - name: Check issue title format
+        id: check_format
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{ secrets.INTERN }}
+          script: |
+            const issueTitle = context.payload.issue.title;
+            // Format kontrolü (Örnek format: "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]")
+            const isValidFormat = /^.* \[.*\]\[.*\]\[.*\]\[.*\]$/.test(issueTitle);
+            core.setOutput('isValid', isValidFormat);
 
-    - name: Add comment and close issue if format is invalid
-      if: ${{ steps.check_format.outputs.result == false }}
-      uses: actions/github-script@0.9.0
-      with:
-        github-token: ${{ secrets.INTERN }}
-        script: |
-          const issueNumber = context.issue.number;
-          // Uygun format mesajı
-          const comment = `
-            Merhaba @${context.actor}, bu issue'nun başlığı belirlenen formata uymuyor.
-            Lütfen başlığı "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]" formatına uygun hale getirin.
-            Bu işlemi tamamladıktan sonra issue'yu yeniden açabilirsiniz.
-          `;
-          // Issue'ya yorum ekle
-          github.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: issueNumber,
-            body: comment
-          });
-          // Issue'yu kapat
-          github.issues.update({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: issueNumber,
-            state: 'closed'
-          });
+      - name: Read Labels JSON
+        id: labels
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './.github/labels.json';
+            const content = fs.readFileSync(path);
+            const labels = JSON.parse(content);
+            return labels;
 
-    - name: Label the issue
-      uses: actions/github-script@0.9.0
-      if: ${{ steps.check_format.outputs.result == true }}
-      with:
-        github-token: ${{ secrets.INTERN }}
-        script: |
-          const title = context.payload.issue.title;
-          const issue_number = context.issue.number;
-          const issue_author = context.payload.issue.user.login;
-          const issueUrl = context.payload.issue.html_url;
-
-          const labelsToAdd = [];
-          const fields = ${{ steps.labels.outputs.result }}
-
-          // Etiketleri ayırt etmek için Regex kullanın
-          const labelGroups = title.match(/\[([^\]]+)\]/g);
-          labelGroups.forEach(group => {
-            // Virgülle ayrılmış etiketleri alın ve boşlukları temizleyin
-            const tags = group.match(/[^,\[\]]+/g).map(tag => tag.trim());
-            // Her bir etiketi kontrol edin ve geçerli ise listeye ekleyin
-            tags.forEach(tag => {
-              for (const [field, validLabels] of Object.entries(fields)) {
-                if (validLabels.includes(tag)) {
-                  labelsToAdd.push(tag);
-                }
-              }
-            });
-          });
-
-       
-          // Eğer uygun etiketler varsa, issue'ya etiket ekle
-          if (labelsToAdd.length > 3) {
-            github.issues.addLabels({
+      - name: Add comment and close issue if format is invalid
+        if: ${{ steps.check_format.outputs.isValid == 'false' }}
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{ secrets.INTERN }}
+          script: |
+            const issueNumber = context.issue.number;
+            // Uygun format mesajı
+            const comment = `
+              Merhaba @${context.actor}, bu issue'nun başlığı belirlenen formata uymuyor.
+              Lütfen başlığı "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]" formatına uygun hale getirin.
+              Bu işlemi tamamladıktan sonra issue'yu yeniden açabilirsiniz.
+            `;
+            // Issue'ya yorum ekle
+            github.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issue_number,
-              labels: labelsToAdd
-            })
+              issue_number: issueNumber,
+              body: comment
+            });
+            // Issue'yu kapat
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              state: 'closed'
+            });
 
-            github.issues.addAssignees({
+      - name: Label the issue
+        uses: actions/github-script@0.9.0
+        if: ${{ steps.check_format.outputs.isValid == 'true' }}
+        with:
+          github-token: ${{ secrets.INTERN }}
+          script: |
+            const title = context.payload.issue.title;
+            const issue_number = context.issue.number;
+            const issue_author = context.payload.issue.user.login;
+            const issueUrl = context.payload.issue.html_url;
+
+            const labelsToAdd = [];
+            const fields = ${{ steps.labels.outputs.result }}
+
+            // Etiketleri ayırt etmek için Regex kullanın
+            const labelGroups = title.match(/\[([^\]]+)\]/g);
+            labelGroups.forEach(group => {
+              // Virgülle ayrılmış etiketleri alın ve boşlukları temizleyin
+              const tags = group.match(/[^,\[\]]+/g).map(tag => tag.trim());
+              // Her bir etiketi kontrol edin ve geçerli ise listeye ekleyin
+              tags.forEach(tag => {
+                for (const [field, validLabels] of Object.entries(fields)) {
+                  if (validLabels.includes(tag)) {
+                    labelsToAdd.push(tag);
+                  }
+                }
+              });
+            });
+
+
+            // Eğer uygun etiketler varsa, issue'ya etiket ekle
+            if (labelsToAdd.length > 3) {
+              github.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue_number,
-                assignees: [issue_author]
-              });
-    
-          }
+                labels: labelsToAdd
+              })
+
+              github.issues.addAssignees({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue_number,
+                  assignees: [issue_author]
+                });
+            }
