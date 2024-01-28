@@ -92,7 +92,7 @@ jobs:
             });
 
 
-            const wasClosed = issue.state === 'closed';
+            const wasClosed = github.issues.state === 'closed';
             if (wasClosed){
                 await github.issues.update({
                     owner: context.repo.owner,
