@@ -45,7 +45,9 @@ jobs:
             const comment = `
               Merhaba @${context.actor}, bu issue'nun başlığı belirlenen formata uymuyor.
               Lütfen başlığı "AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]" formatına uygun hale getirin.
-              Bu işlemi tamamladıktan sonra issue'yu yeniden açabilirsiniz.
+              Örnekler için:
+              https://github.com/VB10/staj_2024/issues/1
+              Bu işlemi tamamladıktan sonra issue'yu başlığını güncellemen yeterli olacak.
             `;
             // Issue'ya yorum ekle
             github.issues.createComment({
