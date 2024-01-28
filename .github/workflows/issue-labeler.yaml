@@ -92,6 +92,16 @@ jobs:
             });
 
 
+            const wasClosed = issue.state === 'closed';
+            if (wasClosed){
+                await github.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue_number,
+                    state: 'open'
+                  });
+            }
+
             // Eğer uygun etiketler varsa, issue'ya etiket ekle
             if (labelsToAdd.length > 3) {
               github.issues.addLabels({
