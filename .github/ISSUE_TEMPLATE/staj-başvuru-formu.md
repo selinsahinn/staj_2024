@@ -1,21 +1,23 @@
 ---
 name: Staj Başvuru Formu
-about: 2024 Staj başvuru hazır formatı.
+about: 2024 Staj başvuru formatı
 title: AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]
 labels: ''
 assignees: ''
 
 ---
 
-***Kişisel:
+### Kişisel:
 
-Ad Soyad: 
-Okul: 
-Sınıf:
-CV(google drive linki):
+- **Ad Soyad:**
+- **Okul:**
+- **Sınıf:**
+- **CV:** [Google Drive Linki](#)
 
-*** Kendin Hakkında (kendini anlatmak istersen):
+### Kendin Hakkında (kendini anlatmak istersen):
 
-*** Teknik (Örnek projeler, linkleri ve detayları)
+(Bu bölümü doldurabilirsin)
 
-İlgilendiklerim (dilller, frameworkler vs):
+### Teknik (Örnek projeler, linkleri ve detayları)
+
+- **İlgilendiklerim (diller, frameworkler vs):**
