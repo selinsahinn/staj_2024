@@ -118,4 +118,17 @@ jobs:
                   issue_number: issue_number,
                   assignees: [issue_author]
                 });
+
+
+                const comment = `
+                Merhaba @${context.actor}, staj başvurun başarı ile taglendi..
+                Lütfen staj bulduktan sonra buraya gelip kapatmayı unutma.
+                Şimdiden bol şans ve sakın unutma staj ne başlangıç ne son çok çalışmak lazım.
+              `;
+                await github.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: comment
+                });
             }
