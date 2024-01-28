@@ -1,5 +1,5 @@
 {
-    "context": ["mobile", "backend", "frontend"],
+    "context": ["mobile", "backend", "frontend","pm","qa","game","data-science"],
     "internLocation": ["uzaktan", "yüzyüze"],
     "internType": ["gönüllü", "zorunlu"],
     "internDuration": ["4hafta", "6hafta"]
