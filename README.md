@@ -17,6 +17,7 @@ Başta zorunlu staj ihtiyacı olan öğrenci arkadaşlar ile stajyer almak istey
 
 
 
+> Yeni eklemeler duruma göre olacaktır. Önerisi olan label.json içinde ekleyip pr da atabilir.
 ## 📍 Örnek başvuru başlıkları 
 
 ```yaml
