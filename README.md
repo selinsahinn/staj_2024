@@ -7,7 +7,13 @@ Başta zorunlu staj ihtiyacı olan öğrenci arkadaşlar ile stajyer almak istey
 
 - Repoda bulunan issues alanına basılır
 - Bu alandan new issue basılır
-- "Staj Başvuru Formu" seçilip içindeki boş alanlar doldurulur
+- "Staj Başvuru Formu" seçilip içindeki boş alanlar doldurulur.
+- Burada format şu şekilde olmak zorundadır. **AD-SOYAD [ALAN][STAJ YERİ][STAJ TİPİ][STAJ SÜRESİ]**
+- Alan kısmı bu bilgilerden birini veya birden fazlasını alabilir: ["mobile", "backend", "frontend","pm","qa","game","data-science","database"]
+- Staj yeri: ["uzaktan", "yüzyüze"]
+- Staj tipi: ["zorunlu", "gönüllü"]
+- Staj süresi: ["4hafta", "6hafta"]
+- Bu bilgiler dışında kabül edilmemektedir ve örneklere bakarak birden fazla giriş yapabilirsiniz.
 
 
 
