@@ -94,12 +94,9 @@ jobs:
 
             let validGroupCount = 0;
 
-            // Etiketleri ayırt etmek için Regex kullanın
             const labelGroups = title.match(/\[([^\]]+)\]/g);
             labelGroups.forEach(group => {
-              // Virgülle ayrılmış etiketleri alın ve boşlukları temizleyin
               const tags = group.match(/[^,\[\]]+/g).map(tag => tag.trim());
-              // Her bir etiketi kontrol edin ve geçerli ise listeye ekleyin
               tags.forEach(tag => {
                 for (const [field, validLabels] of Object.entries(fields)) {
                   if (validLabels.includes(tag)) {
@@ -110,9 +107,6 @@ jobs:
               });
             });
 
-            
-            if (validGroupCount !== Object.keys(fields).length) {
-              }
 
             const wasClosed = issueState === 'closed';
 
@@ -125,31 +119,28 @@ jobs:
                   });
             }
 
-            // Eğer uygun etiketler varsa, issue'ya etiket ekle
-            if (labelsToAdd.length > 3) {
-             await github.issues.addLabels({
+            await github.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              labels: labelsToAdd
+            })
+
+            await github.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue_number,
-                labels: labelsToAdd
-              })
+                assignees: [issue_author]
+              });
 
-              await github.issues.addAssignees({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue_number,
-                  assignees: [issue_author]
-                });
-
-              const comment = `
-                Merhaba @${context.actor}, staj başvurun başarı ile taglendi..
-                Lütfen staj bulduktan sonra buraya gelip kapatmayı unutma.
-                Şimdiden bol şans ve sakın unutma staj ne başlangıç ne son çok çalışmak lazım.
-              `;
-              await github.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue_number,
-                  body: comment
-                });
-            }
+            const comment = `
+              Merhaba @${context.actor}, staj başvurun başarı ile taglendi..
+              Lütfen staj bulduktan sonra buraya gelip kapatmayı unutma.
+              Şimdiden bol şans ve sakın unutma staj ne başlangıç ne son çok çalışmak lazım.
+            `;
+            await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+                body: comment
+              });
